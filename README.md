@@ -3,7 +3,7 @@
 
 **An end-to-end machine learning system for forecasting road-level traffic congestion in Canberra, Australia.**
 
-[**Explore the Live Dashboard**](https://shubhankaranagal.github.io/canberra-traffic-forecasting/) | [**View Source Code**](https://github.com/shubhankaranagal/gb-electricity-imbalance-forecasting)
+[**Explore the Live Dashboard**](https://shubhankaranagal.github.io/canberra-traffic-forecasting/) | [**View Source Code**](https://github.com/shubhankaranagal/canberra-traffic-forecasting)
 
 Trained on approximately **26.7 million historical traffic observations**, this project forecasts congestion across **725 directed road segments**, 15, 30, 60 and 120 minutes into the future.
 
@@ -28,7 +28,7 @@ The persistence baseline assumes that congestion at the forecast horizon will eq
 
 ## Interactive Live Dashboard
 
-**[Launch the Canberra Traffic Forecast Dashboard](https://shubhankaranagal.github.io/gb-electricity-imbalance-forecasting/)**
+**[Launch the Canberra Traffic Forecast Dashboard](https://shubhankaranagal.github.io/canberra-traffic-forecasting/)**
 
 The dashboard visualises current and forecast congestion across Canberra's road network.
 
