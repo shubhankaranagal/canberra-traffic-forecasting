@@ -1,12 +1,9 @@
 
 """
-Collect five live traffic snapshots at five-minute intervals.
+Collect 4 live traffic snapshots at five-minute intervals.
 
 Forecasting code runs from main.
 Production outputs are published to the live-data branch.
-
-Requires the GitHub Actions workflow to prepare a separate
-live-data worktree at .live-data before this script runs.
 """
 
 import shutil
@@ -19,7 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_WORKTREE = PROJECT_ROOT / ".live-data"
 
 INTERVAL_SECONDS = 300
-SNAPSHOTS = 5
+SNAPSHOTS = 4
 
 OUTPUT_FILES = [
     "data/production/live_history.parquet",
