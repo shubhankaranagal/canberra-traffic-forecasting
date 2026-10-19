@@ -37,4 +37,8 @@ data/production/*
 
 .live-data/
 
+# DuckDB databases and write-ahead logs
+*.duckdb
+*.duckdb.wal
+
 

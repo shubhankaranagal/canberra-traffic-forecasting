@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+try:
+    from src.live.traffic_archive import archive_snapshot
+except ModuleNotFoundError:
+    from traffic_archive import archive_snapshot
+
 import json
 from pathlib import Path
 
@@ -1012,12 +1017,13 @@ def main():
     )
 
     print()
-    print(
-        "Updating rolling history..."
-    )
+
+    print("Archiving observations to DuckDB...")
+    archive_snapshot(live)
+
+    print("Updating rolling history...")
 
     history = update_history(live)
-
     print(
         "History rows:",
         f"{len(history):,}",
