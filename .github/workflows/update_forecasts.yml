@@ -2,8 +2,6 @@
 name: Update live Canberra forecasts
 
 on:
-  schedule:
-    - cron: "2,22,42 * * * *"
   workflow_dispatch:
 
 permissions:
