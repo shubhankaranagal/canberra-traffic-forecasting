@@ -2,7 +2,7 @@
 // CANBERRA TRAFFIC FORECAST — FRONTEND
 // ============================================================
 
-const DATA_URL = "https://raw.githubusercontent.com/shubhankaranagal/gb-electricity-imbalance-forecasting/live-data/docs/data/latest_forecasts.json";
+const DATA_URL = "https://raw.githubusercontent.com/shubhankaranagal/canberra-traffic-forecasting/live-data/docs/data/latest_forecasts.json";
 
 const CANBERRA_CENTRE = [-35.2809, 149.1300];
 
