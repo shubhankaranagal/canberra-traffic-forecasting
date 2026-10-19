@@ -188,6 +188,16 @@ Each successful snapshot updates the production files:
 - `data/production/live_forecasts.parquet`
 - `docs/data/latest_forecasts.json`
 
+### Future deployment and persistent storage
+
+The current forecasting pipeline runs through GitHub Actions, whose scheduled execution can be irregular, resulting in gaps between live observations (consequently, you may occasionally observe that the dashboard was last updated e.g. 6 hours ago).
+
+To support a potential future migration to persistent cloud infrastructure, a **DuckDB-backed SQL observation store** has been implemented in `src/live/traffic_archive.py`.
+
+The implementation supports transactional ingestion, deduplication through a composite primary key (`timestamp`, `originsiteid`, `destsiteid`), and SQL queries for retrieving recent traffic observations. It has been tested against the live ACT AddInsight feed and integrated into the collection pipeline.
+
+Currently, forecasts continue to use a rolling Parquet history, while the DuckDB database created on each GitHub Actions runner is ephemeral. A future cloud deployment would retain the database on persistent storage and could use it as the authoritative observation store, enabling continuous historical accumulation and SQL-based feature retrieval.
+
 ### Separating application code and live data
 
 The repository uses two branches:
