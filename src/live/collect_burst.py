@@ -32,6 +32,12 @@ def git(*args, cwd=DATA_WORKTREE, check=True):
         check=check,
     )
 
+def git_output(*args, cwd=DATA_WORKTREE):
+    return subprocess.check_output(
+        ["git", *args],
+        cwd=cwd,
+        text=True,
+    ).strip()
 
 def synchronize_history():
     """
@@ -81,11 +87,31 @@ def publish_outputs():
     if changes.returncode != 1:
         raise RuntimeError("Could not inspect staged changes.")
 
-    git("commit", "-m", "Update live Canberra forecasts")
+    # Record the commit we synchronized with.
+    # Refuse to overwrite the remote if it has changed.
+    expected_sha = git_output("rev-parse", "HEAD")
 
-    # The workflow uses a single concurrency group, so
-    # competing workflow runs should not publish simultaneously.
-    git("push", "origin", "HEAD:live-data")
+    # Create a new root commit containing the staged files.
+    # No parent commit means no accumulated branch history.
+    tree = git_output("write-tree")
+
+    commit = git_output(
+        "commit-tree",
+        tree,
+        "-m", "Update live Canberra forecasts",
+    )
+
+    # Replace live-data with the new root commit.
+    # The explicit lease protects against concurrent updates.
+    git(
+        "push",
+        f"--force-with-lease=refs/heads/live-data:{expected_sha}",
+        "origin",
+        f"{commit}:refs/heads/live-data",
+    )
+
+    # Update the local worktree to the newly published snapshot.
+    git("reset", "--hard", commit)
 
     print("Published snapshot to live-data.", flush=True)
 
