@@ -284,7 +284,7 @@ python -m http.server 8000 --directory docs
 
 Open `http://localhost:8000`.
 
-The deployed dashboard reads published forecast data from the `live-data` branch. Local previewing therefore does not require running the scheduled GitHub Actions collector.
+The deployed dashboard reads published forecast data from the `live-data` branch. Local previewing therefore does not require running the automated collector.
 
 ## 8. Limitations
 
