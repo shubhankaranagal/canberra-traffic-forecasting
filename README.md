@@ -172,7 +172,7 @@ The production system connects historical modelling work to an automated live ap
 **Pipeline**
 
 1. Retrieve current traffic observations from the ACT AddInsight API.
-2. Load and update the persistent rolling traffic history.
+2. Load the rolling 90-minute history carried between runs via live-data.
 3. Construct the same 25 features used by the trained models.
 4. Run inference using four frozen LightGBM model files.
 5. Convert relative-delay predictions into absolute delays and estimated travel times.
@@ -202,7 +202,7 @@ A future extension would move this archival process to persistent storage, accum
 
 The original historical training data contained significant temporal fragmentation, limiting the ability to investigate longer-term seasonal patterns. A continuously collected archive could support future models incorporating annual seasonality, school holidays, seasonal commuting patterns and longer-term changes in traffic behaviour.
 
-**The SQL archive is intended exclusively for historical data collection and future model research.** Live forecasting and the dashboard remain independent, using their existing rolling Parquet files. The currently deployed LightGBM models are unchanged.
+**The SQL archive is intended exclusively for historical data collection, future model research and evaluating live forecast errors.** Live forecasting and the dashboard remain independent, using their existing rolling Parquet files. The currently deployed LightGBM models are unchanged.
 ### Separating application code and live data
 
 The repository uses two branches:
