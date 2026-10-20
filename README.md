@@ -180,7 +180,9 @@ The production system connects historical modelling work to an automated live ap
 
 ### Automated collection
 
-GitHub Actions runs a burst collector designed to take five snapshots approximately five minutes apart.
+An external scheduler triggers the GitHub Actions workflow approximately every 20 minutes. Earlier, the native Github actions scheduler was used, however due to irregular and unreliable scheduling, a cron-job.org external scheduler was adopted. Each workflow collects four traffic snapshots at five-minute intervals, providing near-continuous observations without relying on GitHub Actions' native scheduling mechanism.
+
+Production snapshots are published to the dedicated `live-data` branch using independent root commits, preventing the accumulation of historical Git revisions of frequently updated binary files.
 
 Each successful snapshot updates the production files:
 
@@ -188,16 +190,19 @@ Each successful snapshot updates the production files:
 - `data/production/live_forecasts.parquet`
 - `docs/data/latest_forecasts.json`
 
-### Future deployment and persistent storage
+### Historical SQL archive and future model development
 
-The current forecasting pipeline runs through GitHub Actions, whose scheduled execution can be irregular, resulting in gaps between live observations (consequently, you may occasionally observe that the dashboard was last updated e.g. 6 hours ago).
+The project includes a DuckDB-based SQL ingestion prototype in `src/live/traffic_archive.py`, designed to support the future development of a comprehensive historical traffic archive.
 
-To support a potential future migration to persistent cloud infrastructure, a **DuckDB-backed SQL observation store** has been implemented in `src/live/traffic_archive.py`.
+The implementation supports transactional ingestion, deduplication using a composite primary key (`timestamp`, `originsiteid`, `destsiteid`), and SQL-based retrieval of traffic observations.
 
-The implementation supports transactional ingestion, deduplication through a composite primary key (`timestamp`, `originsiteid`, `destsiteid`), and SQL queries for retrieving recent traffic observations. It has been tested against the live ACT AddInsight feed and integrated into the collection pipeline.
+At present, the DuckDB database is created on an ephemeral GitHub Actions runner and is not retained between workflow runs. It therefore does not yet constitute a permanent historical archive.
 
-Currently, forecasts continue to use a rolling Parquet history, while the DuckDB database created on each GitHub Actions runner is ephemeral. A future cloud deployment would retain the database on persistent storage and could use it as the authoritative observation store, enabling continuous historical accumulation and SQL-based feature retrieval.
+A future extension would move this archival process to persistent storage, accumulating observations continuously across the Canberra road network. This would provide a substantially richer dataset for subsequent model development, particularly by capturing sustained chronological coverage across complete annual cycles.
 
+The original historical training data contained significant temporal fragmentation, limiting the ability to investigate longer-term seasonal patterns. A continuously collected archive could support future models incorporating annual seasonality, school holidays, seasonal commuting patterns and longer-term changes in traffic behaviour.
+
+**The SQL archive is intended exclusively for historical data collection and future model research.** Live forecasting and the dashboard remain independent, using their existing rolling Parquet files. The currently deployed LightGBM models are unchanged.
 ### Separating application code and live data
 
 The repository uses two branches:
@@ -287,8 +292,6 @@ The deployed dashboard reads published forecast data from the `live-data` branch
 
 **Historical distribution shift:** Road conditions, travel patterns and network definitions can change over time. Historical test performance does not guarantee identical accuracy under current conditions.
 
-**Live collection reliability:** GitHub Actions scheduling is best-effort. Delayed or missed runs can reduce the availability of recent traffic lags.
-
 **Prediction uncertainty:** The dashboard presents point forecasts rather than calibrated prediction intervals.
 
 **Segment-level predictions:** Forecasts describe individual directed road segments, not complete journeys or optimal routes.
@@ -304,6 +307,7 @@ Potential extensions include:
 - Prediction intervals and uncertainty calibration.
 - Drift monitoring and scheduled model retraining.
 - Route-level travel-time forecasting.
+- Establish a persistent SQL-backed historical traffic archive to support future model training, prospective evaluation and investigation of annual seasonality using continuously collected observations.
 
 ## Technology Stack
 
