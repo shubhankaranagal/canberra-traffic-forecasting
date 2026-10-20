@@ -261,7 +261,7 @@ The repository includes the trained production models, canonical network feature
 Python 3.12 and the following libraries:
 
 ```bash
-pip install pandas numpy pyarrow requests lightgbm
+pip install pandas numpy pyarrow requests lightgbm duckdb
 ```
 
 ### Run a single forecast update
@@ -292,6 +292,8 @@ The deployed dashboard reads published forecast data from the `live-data` branch
 
 **Historical distribution shift:** Road conditions, travel patterns and network definitions can change over time. Historical test performance does not guarantee identical accuracy under current conditions.
 
+**Fragmented historical coverage:** Although the training dataset contains approximately 26.7 million observations spanning May 2020 to November 2023, its chronological coverage is discontinuous and does not provide an uninterrupted annual cycle. This limits the ability to learn and validate longer-term seasonal patterns, including annual variation in commuting behaviour, school holidays and seasonal changes in congestion. The current models consequently focus on short-term traffic dynamics, time of day and day of week rather than explicitly modelling annual seasonality. A future continuously collected historical archive could help address this limitation.
+
 **Prediction uncertainty:** The dashboard presents point forecasts rather than calibrated prediction intervals.
 
 **Segment-level predictions:** Forecasts describe individual directed road segments, not complete journeys or optimal routes.
@@ -311,7 +313,7 @@ Potential extensions include:
 
 ## Technology Stack
 
-**Python · pandas · NumPy · LightGBM · Parquet · GeoJSON · JavaScript · Leaflet · Git · GitHub Actions · GitHub Pages**
+**Python · pandas · NumPy · LightGBM · Parquet · GeoJSON · JavaScript · Leaflet · Git · GitHub Actions · GitHub Pages · DuckDB**
 
 ---
 
