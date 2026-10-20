@@ -240,8 +240,9 @@ deployment/
 
 src/live/
     collect_burst.py
+    traffic_archive.py
     update_forecasts.py
-
+    
 docs/
     index.html
     app.js
